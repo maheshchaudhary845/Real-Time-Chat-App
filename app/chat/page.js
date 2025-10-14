@@ -103,7 +103,7 @@ const Chat = () => {
 
     const handleLogout = async () => {
         try {
-            // await signOut(auth)
+            await signOut(auth)
             localStorage.removeItem("activeRoom");
             router.push("/")
         } catch (error) {

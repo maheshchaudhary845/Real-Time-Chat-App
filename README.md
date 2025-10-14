@@ -1,36 +1,111 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 💬 Real-Time Chat Application
 
-## Getting Started
+A **real-time chat application** built with **Next.js**, **Firebase Authentication**, and **Cloud Firestore**.  
+This project was developed as part of my internship to showcase practical skills in building interactive, real-time web applications with secure backend integration.
 
-First, run the development server:
+👉 **[Live Demo](https://chat-app-sigma-five-77.vercel.app/)**
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+---
+
+## 🚀 Features
+
+- 🧑‍💻 **Anonymous Authentication** — users can join the chat using a unique username without sign-up.  
+- 💬 **Real-Time Messaging** — powered by Firebase Firestore's `onSnapshot` for instant message updates.  
+- 🏠 **Multiple Chat Rooms** — users can create or join rooms dynamically.  
+- 🔍 **Search Rooms** — quickly find rooms by name.  
+- 📌 **Persistent Room Selection** — active chat room stays selected even after refreshing.  
+- 🌙 **Dark Themed UI** — clean, modern, and responsive interface.  
+- 📱 **Responsive Sidebar** — optimized for mobile and desktop view.  
+- 🧹 **Auto Scroll** — chat view stays at the latest message.
+
+---
+
+## 🛠️ Tech Stack
+
+- [Next.js 14 (App Router)](https://nextjs.org/)
+- [React](https://react.dev/)
+- [Firebase Authentication](https://firebase.google.com/docs/auth)
+- [Firebase Firestore](https://firebase.google.com/docs/firestore)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Vercel](https://vercel.com/) — for deployment
+
+---
+
+## 🧰 Environment Variables
+
+Create a `.env.local` file in the project root and add your Firebase config:
+
+```env
+NEXT_PUBLIC_API_KEY=YOUR_API_KEY
+NEXT_PUBLIC_AUTH_DOMAIN=YOUR_AUTH_DOMAIN
+NEXT_PUBLIC_PROJECT_ID=YOUR_PROJECT_ID
+NEXT_PUBLIC_STORAGE_BUCKET=YOUR_STORAGE_BUCKET
+NEXT_PUBLIC_MESSAGING_SENDER_ID=YOUR_MESSAGING_SENDER_ID
+NEXT_PUBLIC_APP_ID=YOUR_APP_ID
+NEXT_PUBLIC_MEASUREMENT_ID=YOUR_MEASUREMENT_ID
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+> ⚠️ These must also be set in your **Vercel Project Settings → Environment Variables** for the deployed version to work.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🧭 Getting Started (Local Development)
 
-## Learn More
+1. Clone the repository  
+2. Install dependencies using `npm install`  
+3. Set up your Firebase project:
+   - Create a Firebase project at Firebase Console  
+   - Enable **Anonymous Authentication**  
+   - Create a **Cloud Firestore** database  
+   - Add your **Authorized Domain** for Vercel in Authentication settings  
+   - Update Firestore security rules appropriately  
+4. Run the development server with `npm run dev`  
+5. Open http://localhost:3000 in your browser
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🌐 Deployment
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+This project is deployed on **Vercel**.  
+To deploy your own:
 
-## Deploy on Vercel
+1. Push your code to a GitHub repository  
+2. Go to Vercel and import the repository  
+3. Add the same Firebase environment variables in Vercel  
+4. Deploy 🚀
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+👉 [Live Demo](https://chat-app-sigma-five-77.vercel.app/)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## 📸 Screenshots
+
+| Login Page | Chat Interface |
+|-----------|----------------|
+| ![Login](./public/screenshots/login.png) | ![Chat](./public/screenshots/chat.png) |
+
+---
+
+## 🔐 Firestore Rules (Recommended)
+rules_version = '2';
+service cloud.firestore {
+match /databases/{database}/documents {
+match /{document=**} {
+allow read, write: if request.auth != null;
+}
+}
+}
+
+---
+
+## 📄 License
+
+This project is for **educational and internship demonstration purposes**.  
+Feel free to fork and modify.
+
+---
+
+## ✨ Author
+
+**Mahesh Chaudhary**  
+🌐 [Live App](https://chat-app-sigma-five-77.vercel.app/)
