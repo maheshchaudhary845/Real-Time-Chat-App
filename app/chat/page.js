@@ -104,6 +104,7 @@ const Chat = () => {
     const handleLogout = async () => {
         try {
             await signOut(auth)
+            localStorage.removeItem("uid")
             localStorage.removeItem("activeRoom");
             router.push("/")
         } catch (error) {
