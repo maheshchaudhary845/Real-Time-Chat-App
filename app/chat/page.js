@@ -43,15 +43,21 @@ const Chat = () => {
         fetchRooms()
 
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                const userDoc = await getDoc(doc(db, "users", user.uid))
-                if (userDoc.exists()) {
-                    setCurrentUser({ uid: user.uid, ...userDoc.data() })
+            if (!user) {
+                const storedUid = localStorage.getItem("uid");
+                if (!storedUid) {
+                    router.push("/");
+                    return;
                 }
-            } else {
-                router.push("/")
+                return; // Wait for Firebase auth rehydration
             }
-        })
+
+            const userDoc = await getDoc(doc(db, "users", user.uid));
+            if (userDoc.exists()) {
+                setCurrentUser({ uid: user.uid, ...userDoc.data() });
+            }
+        });
+
         return () => unsubscribe();
     }, [])
 
@@ -104,7 +110,6 @@ const Chat = () => {
     const handleLogout = async () => {
         try {
             await signOut(auth)
-            localStorage.removeItem("uid")
             localStorage.removeItem("activeRoom");
             router.push("/")
         } catch (error) {
@@ -141,19 +146,19 @@ const Chat = () => {
                     <div className={`left ${sidebar ? "block absolute left-0 z-10" : "hidden"} sm:block w-[300px] bg-slate-900 min-h-[calc(100vh-56px)] border-r border-gray-600 p-4 px-8`}>
                         <h2 className="text-lg text-center mb-2 font-semibold">Available Chat Rooms</h2>
                         <div className="flex flex-col items-center gap-2">
-                            <input type="search" placeholder="search" className="border-2 border-slate-700 rounded-sm w-60 px-2 py-1" value={searchQuery} onChange={(e)=>setSearchQuery(e.target.value)} />
+                            <input type="search" placeholder="search" className="border-2 border-slate-700 rounded-sm w-60 px-2 py-1" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
                             <div className="flex flex-col gap-2 w-full">
-                                {rooms.filter(room=> room.name.toLowerCase().includes(searchQuery.toLowerCase()))
-                                .map(room => (
-                                    <h3
-                                        key={room.id}
-                                        onClick={() => handleRoomSelect(room)}
-                                        className={`p-2 rounded-sm cursor-pointer transition-all duration-100 ease-out ${activeRoom?.name === room.name ? "bg-sky-500 hover:bg-sky-600" : "bg-gray-800 hover:bg-gray-700"}`}
-                                    >
-                                        {room.name}
-                                    </h3>
-                                ))}
-                                {rooms.filter(room=> room.name.toLowerCase().includes(searchQuery.toLowerCase())).length === 0 && <p className="text-gray-400 text-center text-sm mt-2">No rooms found</p>}
+                                {rooms.filter(room => room.name.toLowerCase().includes(searchQuery.toLowerCase()))
+                                    .map(room => (
+                                        <h3
+                                            key={room.id}
+                                            onClick={() => handleRoomSelect(room)}
+                                            className={`p-2 rounded-sm cursor-pointer transition-all duration-100 ease-out ${activeRoom?.name === room.name ? "bg-sky-500 hover:bg-sky-600" : "bg-gray-800 hover:bg-gray-700"}`}
+                                        >
+                                            {room.name}
+                                        </h3>
+                                    ))}
+                                {rooms.filter(room => room.name.toLowerCase().includes(searchQuery.toLowerCase())).length === 0 && <p className="text-gray-400 text-center text-sm mt-2">No rooms found</p>}
                             </div>
                             <div onClick={addRoom} className="w-10 h-10 bg-sky-500 hover:bg-sky-600 cursor-pointer mt-2 rounded-full flex justify-center items-center">
                                 <span className="text-3xl">+</span>
