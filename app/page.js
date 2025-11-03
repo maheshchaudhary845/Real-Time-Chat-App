@@ -40,6 +40,7 @@ export default function Home() {
 
                 if (storedUid && storedUid === existingUser.uid) {
                     router.push("/chat");
+                    return;
                 } else {
                     setError("Username already taken. Please choose another one.");
                 }
