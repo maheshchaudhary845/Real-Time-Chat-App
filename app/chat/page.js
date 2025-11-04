@@ -177,10 +177,10 @@ const Chat = () => {
                                     {messages.map((msg) => (
                                         <div
                                             key={msg.id}
-                                            className={`flex ${msg.senderId === currentUser.uid ? "justify-end" : "justify-start"}`}
+                                            className={`flex ${msg.senderId === currentUser?.uid ? "justify-end" : "justify-start"}`}
                                         >
                                             <div
-                                                className={`relative max-w-[70%] px-3 py-2 rounded-lg text-white ${msg.senderId === currentUser.uid ? "bg-blue-500 rounded-br-none" : "bg-gray-700 rounded-bl-none"}`}
+                                                className={`relative max-w-[70%] px-3 py-2 rounded-lg text-white ${msg.senderId === currentUser?.uid ? "bg-blue-500 rounded-br-none" : "bg-gray-700 rounded-bl-none"}`}
                                             >
                                                 {msg.senderId !== currentUser?.uid && (
                                                     <p className="text-sm text-gray-300 mb-1">{msg.senderName}</p>
