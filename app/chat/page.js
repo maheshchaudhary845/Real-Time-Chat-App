@@ -43,19 +43,23 @@ const Chat = () => {
         fetchRooms()
 
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
-            if (!user) {
-                const storedUid = localStorage.getItem("uid");
-                if (!storedUid) {
-                    router.push("/");
-                    return;
+            const storedUid = localStorage.getItem("uid");
+
+            if (!user && !storedUid) {
+                router.push("/");
+                return;
+            }
+
+            if (!user && storedUid) {
+                const userDoc = await getDoc(doc(db, "users", storedUid));
+                if (userDoc.exists()) {
+                    setCurrentUser({ uid: storedUid, ...userDoc.data() });
                 }
                 return;
             }
 
             const userDoc = await getDoc(doc(db, "users", user.uid));
-            if (userDoc.exists()) {
-                setCurrentUser({ uid: user.uid, ...userDoc.data() });
-            }
+            if (userDoc.exists()) setCurrentUser(userDoc.data());
         });
 
         return () => unsubscribe();
@@ -94,16 +98,13 @@ const Chat = () => {
     const sendMessage = async () => {
         if (!newMessage.trim() || !activeRoom || !currentUser) return;
 
-        const messageRef = collection(db, "rooms", activeRoom.id, "messages")
-
-        const msg = {
+        await addDoc(collection(db, "rooms", activeRoom.id, "messages"), {
             text: newMessage,
             senderId: currentUser.uid,
             senderName: currentUser.username,
             createdAt: new Date(),
-        }
+        });
 
-        const docRef = await addDoc(messageRef, msg)
         setNewMessage("");
     }
 
@@ -123,24 +124,44 @@ const Chat = () => {
                 <ul className="flex justify-between items-center h-full mx-10">
                     <div className="flex items-center justify-center gap-4">
                         <span onClick={() => setSidebar(!sidebar)} className="sm:hidden cursor-pointer">
-                            {sidebar
-                                ?
+                            {sidebar ? (
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="26" height="26" color="#ffffff" fill="none">
-                                    <path d="M18 6L6.00081 17.9992M17.9992 18L6 6.00085" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path>
+                                    <path d="M18 6L6 18M18 18L6 6" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path>
                                 </svg>
-                                :
+                            ) : (
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="26" height="26" color="#ffffff" fill="none">
-                                    <path d="M4 5L20 5" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path>
-                                    <path d="M4 12L20 12" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path>
-                                    <path d="M4 19L20 19" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path>
-                                </svg>}
-
+                                    <path d="M4 5H20M4 12H20M4 19H20" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path>
+                                </svg>
+                            )}
                         </span>
+
                         <li className="font-bold text-xl">Chat App</li>
                     </div>
-                    <li onClick={() => handleLogout()} className="bg-red-600 p-2 rounded-sm cursor-pointer hover:bg-red-700">Log out</li>
+
+                    <div className="flex items-center gap-4">
+
+                        {currentUser && (
+                            <div className="flex items-center gap-2 bg-gray-800 px-3 py-1 rounded-lg shadow-md border border-gray-700">
+                                <div className="w-7 h-7 rounded-full bg-purple-600 flex items-center justify-center text-xs font-semibold uppercase">
+                                    {currentUser.username[0]}
+                                </div>
+
+                                <span className="text-sm text-gray-200 font-medium">
+                                    {currentUser.username}
+                                </span>
+                            </div>
+                        )}
+
+                        <li
+                            onClick={() => handleLogout()}
+                            className="bg-red-600 px-4 py-2 rounded-md cursor-pointer hover:bg-red-700 transition"
+                        >
+                            Log out
+                        </li>
+                    </div>
                 </ul>
             </nav>
+
             <main>
                 <section className="flex mt-14">
                     <div className={`left ${sidebar ? "block absolute left-0 z-10" : "hidden"} sm:block w-[300px] bg-slate-900 min-h-[calc(100vh-56px)] border-r border-gray-600 p-4 px-8`}>
