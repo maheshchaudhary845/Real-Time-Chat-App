@@ -49,7 +49,7 @@ const Chat = () => {
                     router.push("/");
                     return;
                 }
-                return; // Wait for Firebase auth rehydration
+                return;
             }
 
             const userDoc = await getDoc(doc(db, "users", user.uid));
