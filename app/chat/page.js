@@ -120,46 +120,52 @@ const Chat = () => {
 
     return (
         <>
-            <nav className="fixed top-0 z-20 h-14 bg-slate-950 border-b border-gray-600 w-full">
-                <ul className="flex justify-between items-center h-full mx-10">
-                    <div className="flex items-center justify-center gap-4">
-                        <span onClick={() => setSidebar(!sidebar)} className="sm:hidden cursor-pointer">
+            <nav className="fixed top-0 z-30 h-14 bg-slate-950 border-b border-gray-700 w-full px-4 sm:px-10">
+                <div className="flex justify-between items-center h-full">
+
+                    <div className="flex items-center gap-4">
+                        <button
+                            onClick={() => setSidebar(!sidebar)}
+                            className="sm:hidden text-white focus:outline-none"
+                        >
                             {sidebar ? (
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="26" height="26" color="#ffffff" fill="none">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="28" height="28" color="#ffffff" fill="none">
                                     <path d="M18 6L6 18M18 18L6 6" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path>
                                 </svg>
                             ) : (
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="26" height="26" color="#ffffff" fill="none">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="28" height="28" color="#ffffff" fill="none">
                                     <path d="M4 5H20M4 12H20M4 19H20" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path>
                                 </svg>
                             )}
-                        </span>
+                        </button>
 
-                        <li className="font-bold text-xl">Chat App</li>
+                        <h1 className="font-bold text-xl text-white tracking-wide">
+                            Chat App
+                        </h1>
                     </div>
 
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-3 sm:gap-4">
 
                         {currentUser && (
                             <div className="flex items-center gap-2 bg-gray-800 px-3 py-1 rounded-lg shadow-md border border-gray-700">
                                 <div className="w-7 h-7 rounded-full bg-purple-600 flex items-center justify-center text-xs font-semibold uppercase">
                                     {currentUser.username[0]}
                                 </div>
-
-                                <span className="text-sm text-gray-200 font-medium">
+                                <span className="hidden sm:block text-sm text-gray-200 font-medium">
                                     {currentUser.username}
                                 </span>
                             </div>
                         )}
 
-                        <li
-                            onClick={() => handleLogout()}
-                            className="bg-red-600 px-4 py-2 rounded-md cursor-pointer hover:bg-red-700 transition"
+                        <button
+                            onClick={handleLogout}
+                            className="bg-red-600 px-4 py-2 rounded-md text-sm sm:text-base cursor-pointer hover:bg-red-700 transition"
                         >
                             Log out
-                        </li>
+                        </button>
                     </div>
-                </ul>
+
+                </div>
             </nav>
 
             <main>
