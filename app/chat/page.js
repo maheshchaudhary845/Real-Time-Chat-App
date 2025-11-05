@@ -159,9 +159,9 @@ const Chat = () => {
         <div ref={dropdownRef} className="relative">
             <button
                 onClick={() => setDropdownOpen(prev => !prev)}
-                className="flex items-center gap-2 bg-gray-800 px-3 py-1 rounded-lg border border-gray-700 hover:bg-gray-700 transition"
+                className="flex items-center gap-2 bg-gray-800 p-1 rounded-full border border-gray-700 hover:bg-gray-700 transition"
             >
-                <div className="w-7 h-7 rounded-full bg-purple-600 flex items-center justify-center text-xs font-semibold uppercase">
+                <div className="w-9 h-9 rounded-full bg-cyan-600 flex items-center justify-center text-sm font-semibold uppercase">
                     {currentUser?.username?.[0]}
                 </div>
             </button>
