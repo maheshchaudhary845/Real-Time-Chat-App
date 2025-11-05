@@ -13,7 +13,9 @@ const Chat = () => {
     const [currentUser, setCurrentUser] = useState(null)
     const [sidebar, setSidebar] = useState(false)
     const [searchQuery, setSearchQuery] = useState("")
+    const [dropdownOpen, setDropdownOpen] = useState(false);
 
+    const dropdownRef = useRef(null);
     const messageEndRef = useRef(null)
 
     const router = useRouter()
@@ -23,6 +25,16 @@ const Chat = () => {
             messageEndRef.current.scrollIntoView({ behavior: "smooth" })
         }
     }, [messages])
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setDropdownOpen(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
 
     useEffect(() => {
         const fetchRooms = async () => {
@@ -121,52 +133,58 @@ const Chat = () => {
     return (
         <>
             <nav className="fixed top-0 z-30 h-14 bg-slate-950 border-b border-gray-700 w-full px-4 sm:px-10">
-                <div className="flex justify-between items-center h-full">
+    <div className="flex justify-between items-center h-full">
 
-                    <div className="flex items-center gap-4">
-                        <button
-                            onClick={() => setSidebar(!sidebar)}
-                            className="sm:hidden text-white focus:outline-none"
-                        >
-                            {sidebar ? (
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="28" height="28" color="#ffffff" fill="none">
-                                    <path d="M18 6L6 18M18 18L6 6" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path>
-                                </svg>
-                            ) : (
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="28" height="28" color="#ffffff" fill="none">
-                                    <path d="M4 5H20M4 12H20M4 19H20" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path>
-                                </svg>
-                            )}
-                        </button>
+        <div className="flex items-center gap-4">
+            <button
+                onClick={() => setSidebar(!sidebar)}
+                className="sm:hidden text-white focus:outline-none"
+            >
+                {sidebar ? (
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="28" height="28" fill="none">
+                        <path d="M18 6L6 18M18 18L6 6" stroke="white" strokeWidth="2" strokeLinecap="round" />
+                    </svg>
+                ) : (
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="28" height="28" fill="none">
+                        <path d="M4 5H20M4 12H20M4 19H20" stroke="white" strokeWidth="2" strokeLinecap="round" />
+                    </svg>
+                )}
+            </button>
 
-                        <h1 className="font-bold text-xl text-white tracking-wide">
-                            Chat App
-                        </h1>
-                    </div>
+            <h1 className="font-bold text-xl text-white tracking-wide">
+                Chat App
+            </h1>
+        </div>
 
-                    <div className="flex items-center gap-3 sm:gap-4">
-
-                        {currentUser && (
-                            <div className="flex items-center gap-2 bg-gray-800 px-3 py-1 rounded-lg shadow-md border border-gray-700">
-                                <div className="w-7 h-7 rounded-full bg-purple-600 flex items-center justify-center text-xs font-semibold uppercase">
-                                    {currentUser.username[0]}
-                                </div>
-                                <span className="hidden sm:block text-sm text-gray-200 font-medium">
-                                    {currentUser.username}
-                                </span>
-                            </div>
-                        )}
-
-                        <button
-                            onClick={handleLogout}
-                            className="bg-red-600 px-4 py-2 rounded-md text-sm sm:text-base cursor-pointer hover:bg-red-700 transition"
-                        >
-                            Log out
-                        </button>
-                    </div>
-
+        <div ref={dropdownRef} className="relative">
+            <button
+                onClick={() => setDropdownOpen(prev => !prev)}
+                className="flex items-center gap-2 bg-gray-800 px-3 py-1 rounded-lg border border-gray-700 hover:bg-gray-700 transition"
+            >
+                <div className="w-7 h-7 rounded-full bg-purple-600 flex items-center justify-center text-xs font-semibold uppercase">
+                    {currentUser?.username?.[0]}
                 </div>
-            </nav>
+            </button>
+
+            {dropdownOpen && (
+                <div className="absolute right-0 mt-2 w-40 bg-gray-900 border border-gray-700 rounded-lg shadow-lg py-2">
+                    <div className="px-4 py-1 text-gray-300 text-sm border-b border-gray-700">
+                        {currentUser?.username}
+                    </div>
+
+                    <button
+                        className="w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-red-600 hover:text-white transition"
+                        onClick={handleLogout}
+                    >
+                        Logout
+                    </button>
+                </div>
+            )}
+        </div>
+    </div>
+</nav>
+
+
 
             <main>
                 <section className="flex mt-14">
